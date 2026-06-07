@@ -1,10 +1,13 @@
 # ===========================================
-# MK-Ops License Manager - Docker Compose (DEBUG MODE)
+# MK-Ops License Manager - Docker Compose
 # ===========================================
-# ⚠️ VERSÃO COM VALORES HARDCODED PARA DEBUG LOCAL
+# Configure as variáveis de ambiente no Portainer.
 # 
-# Quando subir no Portainer, use as variáveis de ambiente.
-# Veja: PORTAINER.md para guia completo de configuração
+# Para desenvolvimento local:
+# 1. Copie .env.example para .env
+# 2. Ajuste os valores conforme necessário
+# 
+# Veja PORTAINER.md para guia completo de configuração em produção
 # ===========================================
 
 services:
@@ -14,17 +17,17 @@ services:
     container_name: mkops_licenses_db
     restart: unless-stopped
     environment:
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: postgres123
-      POSTGRES_DB: mkops_licenses
+      POSTGRES_USER: ${POSTGRES_USER:-postgres}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB:-mkops_licenses}
       POSTGRES_INITDB_ARGS: "-E UTF8"
-      TZ: America/Sao_Paulo
+      TZ: ${TZ:-America/Sao_Paulo}
     volumes:
       - mkops_pgdata:/var/lib/postgresql/data
     networks:
       - internal_network
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U postgres -d mkops_licenses"]
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-postgres} -d ${POSTGRES_DB:-mkops_licenses}"]
       interval: 10s
       timeout: 5s
       retries: 5
@@ -42,11 +45,10 @@ services:
     container_name: mkops_licenses_app
     restart: unless-stopped
     environment:
-      # Valores hardcoded para debug - SUBSTITUA depois no Portainer
-      - DATABASE_URL=postgresql://postgres:postgres123@db:5432/mkops_licenses
-      - NODE_ENV=production
-      - NEXT_PUBLIC_APP_URL=http://localhost:3000
-      - PORT=3000
+      - DATABASE_URL=${DATABASE_URL}
+      - NODE_ENV=${NODE_ENV:-production}
+      - NEXT_PUBLIC_APP_URL=${NEXT_PUBLIC_APP_URL}
+      - PORT=${PORT:-3000}
     # Porta NÃO exposta - acesso APENAS via Nginx Proxy Manager
     # ports:
     #   - "3000:3000"
