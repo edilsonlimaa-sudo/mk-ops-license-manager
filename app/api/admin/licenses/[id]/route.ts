@@ -25,19 +25,20 @@ export async function GET(
   
   const license = await db.license.findUnique({
     where: { id },
-    include: {
-      validationLogs: {
-        orderBy: { validatedAt: "desc" },
-        take: 10,
-      },
-    },
   });
 
   if (!license) {
     return NextResponse.json({ error: "License not found" }, { status: 404 });
   }
 
-  return NextResponse.json(license);
+  // Fetch validation logs separately (no FK relation)
+  const validationLogs = await db.validationLog.findMany({
+    where: { mkAuthAddress: license.mkAuthAddress },
+    orderBy: { validatedAt: "desc" },
+    take: 10,
+  });
+
+  return NextResponse.json({ ...license, validationLogs });
 }
 
 // PUT /api/admin/licenses/[id]
