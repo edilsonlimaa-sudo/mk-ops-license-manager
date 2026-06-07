@@ -16,7 +16,45 @@ fi
 echo ""
 
 echo "⏳ Waiting for database to be ready..."
-until node -e "
+echo ""
+echo "🔍 Network diagnostics:"
+echo "   Checking if 'db' host resolves..."
+if nslookup db >/dev/null 2>&1; then
+  echo "   ✅ DNS resolution for 'db' works"
+  DB_IP=$(nslookup db | grep 'Address:' | tail -1 | awk '{print $2}')
+  echo "   📍 DB IP: $DB_IP"
+else
+  echo "   ❌ Cannot resolve 'db' hostname"
+  echo "   ⚠️  Both containers must be in the same network!"
+fi
+
+echo ""
+echo "   Checking if port 5432 is reachable..."
+if nc -zv db 5432 2>&1 | grep -q succeeded; then
+  echo "   ✅ Port 5432 on 'db' is reachable"
+else
+  echo "   ❌ Port 5432 on 'db' is NOT reachable"
+  echo "   ⚠️  DB container might not be running or not ready yet"
+fi
+
+echo "🔄 Attempting database connection..."
+until npx prisma db execute --stdin <<< "SELECT 1" 2>/dev/null; do
+  echo "⏳ Database is unavailable - sleeping"
+  sleep 2
+done
+
+echo ""
+echo "✅ Database connected!"
+echo ""
+
+echo "📊 Running database migrations..."
+npx prisma migrate deploy
+
+echo "✅ Migrations completed!"
+echo ""
+
+echo "🎯 Starting Next.js server..."
+exec node server.js
 const { PrismaClient } = require('@prisma/client');
 const { PrismaPg } = require('@prisma/adapter-pg');
 const pg = require('pg');
