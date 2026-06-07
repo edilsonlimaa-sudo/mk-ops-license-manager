@@ -12,9 +12,15 @@ RUN apk add --no-cache libc6-compat
 COPY package*.json ./
 COPY prisma ./prisma/
 
-# Install ALL dependencies (needed for build)
-# Using npm install instead of npm ci because lock file will be out of sync
-RUN npm install && \
+# Validate Prisma version before install
+RUN echo "📦 Checking package.json Prisma version..." && \
+    grep -A 1 '@prisma/client' package.json && \
+    echo "📦 Installing dependencies with npm ci (respects lock file)..."
+
+# Install ALL dependencies (needed for build) - using npm ci to respect lock file
+RUN npm ci && \
+    echo "✅ Prisma version installed:" && \
+    npm list @prisma/client prisma --depth=0 && \
     npm cache clean --force
 
 # ======================================
