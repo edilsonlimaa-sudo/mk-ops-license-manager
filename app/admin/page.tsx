@@ -81,6 +81,52 @@ export default function AdminDashboard() {
         />
       </div>
 
+      {/* Guia de Cenários */}
+      <div className="rounded-lg border bg-white p-6">
+        <h3 className="text-lg font-semibold text-gray-900 mb-4">📖 Guia de Status das Licenças</h3>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          <div className="flex items-start gap-3 p-3 rounded-lg bg-green-50 border border-green-200">
+            <span className="text-2xl">✓</span>
+            <div>
+              <p className="font-semibold text-green-800">Ativa</p>
+              <p className="text-xs text-green-700">Funcionando normalmente, longe de expirar</p>
+            </div>
+          </div>
+          
+          <div className="flex items-start gap-3 p-3 rounded-lg bg-yellow-50 border border-yellow-200">
+            <span className="text-2xl">⏰</span>
+            <div>
+              <p className="font-semibold text-yellow-800">Expirando em Breve</p>
+              <p className="text-xs text-yellow-700">Ativa mas expira em até 7 dias, renovar logo</p>
+            </div>
+          </div>
+          
+          <div className="flex items-start gap-3 p-3 rounded-lg bg-orange-50 border border-orange-200">
+            <span className="text-2xl">⚠️</span>
+            <div>
+              <p className="font-semibold text-orange-800">Período de Graça</p>
+              <p className="text-xs text-orange-700">Expirada há pouco, ainda com acesso (7 dias)</p>
+            </div>
+          </div>
+          
+          <div className="flex items-start gap-3 p-3 rounded-lg bg-red-50 border border-red-200">
+            <span className="text-2xl">❌</span>
+            <div>
+              <p className="font-semibold text-red-800">Expirada</p>
+              <p className="text-xs text-red-700">Acesso bloqueado, período de graça terminou</p>
+            </div>
+          </div>
+          
+          <div className="flex items-start gap-3 p-3 rounded-lg bg-gray-50 border border-gray-200">
+            <span className="text-2xl">⏸</span>
+            <div>
+              <p className="font-semibold text-gray-800">Suspensa</p>
+              <p className="text-xs text-gray-700">Bloqueada manualmente por inadimplência</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
       {/* Expiring Licenses Alert */}
       {data.expiringLicenses.length > 0 && (
         <div className="rounded-lg border-l-4 border-yellow-500 bg-yellow-50 p-6">

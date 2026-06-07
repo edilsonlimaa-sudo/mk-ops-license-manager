@@ -100,6 +100,28 @@ export default function LicensesPage() {
         </Link>
       </div>
 
+      {/* Legenda de Status */}
+      <div className="rounded-lg border bg-blue-50 p-4">
+        <p className="text-sm font-semibold text-blue-900 mb-2">💡 Legenda de Status:</p>
+        <div className="flex flex-wrap gap-3 text-xs">
+          <span className="inline-flex items-center gap-1 px-2 py-1 rounded bg-green-100 text-green-800">
+            <span>✓</span> Ativa (OK)
+          </span>
+          <span className="inline-flex items-center gap-1 px-2 py-1 rounded bg-yellow-100 text-yellow-800">
+            <span>⏰</span> Expira em ≤7d
+          </span>
+          <span className="inline-flex items-center gap-1 px-2 py-1 rounded bg-orange-100 text-orange-800">
+            <span>⚠️</span> Grace Period (ainda válida)
+          </span>
+          <span className="inline-flex items-center gap-1 px-2 py-1 rounded bg-red-100 text-red-800">
+            <span>❌</span> Bloqueada
+          </span>
+          <span className="inline-flex items-center gap-1 px-2 py-1 rounded bg-gray-100 text-gray-800">
+            <span>⏸</span> Suspensa
+          </span>
+        </div>
+      </div>
+
       {/* Filters */}
       <div className="rounded-lg border bg-white p-4">
         <form onSubmit={handleSearch} className="flex gap-4">
