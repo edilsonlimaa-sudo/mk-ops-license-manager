@@ -86,7 +86,7 @@ export default function NewLicensePage() {
 
           <div>
             <label className="block text-sm font-medium text-gray-700">
-              Nome da Empresa <span className="text-red-500">*</span>
+              Nome do Cliente <span className="text-red-500">*</span>
             </label>
             <input
               type="text"
@@ -95,6 +95,9 @@ export default function NewLicensePage() {
               placeholder="Empresa Exemplo Ltda"
               className="mt-1 block w-full rounded-lg border px-4 py-2 focus:border-blue-500 focus:outline-none"
             />
+            <p className="mt-1 text-xs text-gray-500">
+              Nome da empresa que utilizará a licença
+            </p>
           </div>
         </div>
 
