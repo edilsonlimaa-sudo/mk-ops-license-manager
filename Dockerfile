@@ -32,6 +32,10 @@ RUN npx prisma generate
 ENV NEXT_TELEMETRY_DISABLED=1
 ENV NODE_ENV=production
 
+# Set dummy DATABASE_URL for build time (required by Prisma 7.x)
+# This is NOT used in runtime - the real DATABASE_URL comes from docker-compose
+ENV DATABASE_URL="postgresql://postgres:postgres@localhost:5432/postgres"
+
 RUN npm run build
 
 # ======================================
