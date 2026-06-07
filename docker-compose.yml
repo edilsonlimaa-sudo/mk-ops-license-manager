@@ -47,9 +47,9 @@ services:
       - NODE_ENV=production
       - NEXT_PUBLIC_APP_URL=http://localhost:3000
       - PORT=3000
-    # Porta exposta para DEBUG LOCAL - remova no Portainer
-    ports:
-      - "3000:3000"
+    # Porta NÃO exposta - acesso APENAS via Nginx Proxy Manager
+    # ports:
+    #   - "3000:3000"
     depends_on:
       db:
         condition: service_healthy
