@@ -91,15 +91,24 @@ echo "\n🔗 5. Testando conexão Prisma..."
 
 PRISMA_TEST=$(docker exec mkops_licenses_app node -e "
 const { PrismaClient } = require('@prisma/client');
-const prisma = new PrismaClient();
+const { PrismaPg } = require('@prisma/adapter-pg');
+const pg = require('pg');
+
+const connectionString = process.env.DATABASE_URL;
+const pool = new pg.Pool({ connectionString });
+const adapter = new PrismaPg(pool);
+const prisma = new PrismaClient({ adapter });
+
 prisma.\$connect()
   .then(() => { 
     console.log('CONNECTED'); 
     return prisma.\$disconnect(); 
   })
+  .then(() => pool.end())
+  .then(() => process.exit(0))
   .catch((e) => { 
     console.error('ERROR:', e.message); 
-    process.exit(1); 
+    pool.end().finally(() => process.exit(1));
   });
 " 2>&1)
 
