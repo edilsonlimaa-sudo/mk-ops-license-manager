@@ -1,0 +1,47 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../app/generated/prisma"
+}
+
+datasource db {
+  provider  = "postgresql"
+}
+
+model License {
+  id             String    @id @default(uuid())
+  mkAuthAddress  String    @unique @map("mk_auth_address")
+  clientName     String    @map("client_name")
+  status         String    @default("active") // active | expired | suspended
+  
+  // B2B Billing fields
+  cnpj           String?
+  billingEmail   String?   @map("billing_email")
+  phone          String?
+  address        String?
+  monthlyValue   Decimal?  @map("monthly_value") @db.Decimal(10, 2)
+  billingDay     Int?      @map("billing_day") // dia do mês (1-31)
+  notes          String?   @db.Text
+  
+  // Dates
+  activatedAt    DateTime? @map("activated_at")
+  expiresAt      DateTime? @map("expires_at")
+  createdAt      DateTime  @default(now()) @map("created_at")
+  updatedAt      DateTime  @updatedAt @map("updated_at")
+
+  @@index([mkAuthAddress])
+  @@index([status])
+  @@index([expiresAt])
+  @@map("licenses")
+}
+
+model ValidationLog {
+  id             String   @id @default(uuid())
+  mkAuthAddress  String   @map("mk_auth_address")
+  result         Boolean
+  status         String
+  validatedAt    DateTime @default(now()) @map("validated_at")
+
+  @@index([mkAuthAddress])
+  @@index([validatedAt])
+  @@map("validation_logs")
+}
