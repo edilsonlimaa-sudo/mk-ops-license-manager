@@ -47,8 +47,8 @@ WORKDIR /app
 ENV NODE_ENV=production
 ENV NEXT_TELEMETRY_DISABLED=1
 
-# Install network tools for debugging + OpenSSL 1.1 for Prisma
-RUN apk add --no-cache bind-tools netcat-openbsd postgresql-client openssl1.1-compat
+# Install OpenSSL 3.x (Alpine default)
+RUN apk add --no-cache bind-tools netcat-openbsd postgresql-client openssl
 
 # Create non-root user
 RUN addgroup --system --gid 1001 nodejs && \
