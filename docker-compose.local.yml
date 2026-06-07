@@ -1,0 +1,30 @@
+# Docker Compose para DESENVOLVIMENTO LOCAL
+# Sobe apenas o PostgreSQL - rode a app com `npm run dev`
+
+version: '3.8'
+
+services:
+  db:
+    image: postgres:16-alpine
+    container_name: mkops_licenses_db_local
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-postgres}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-postgres}
+      POSTGRES_DB: ${POSTGRES_DB:-mkops_licenses}
+      POSTGRES_INITDB_ARGS: "-E UTF8"
+      TZ: ${TZ:-America/Sao_Paulo}
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata_local:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d mkops_licenses"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+
+volumes:
+  pgdata_local:
+    driver: local
