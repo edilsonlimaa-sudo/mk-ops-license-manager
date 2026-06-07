@@ -4,6 +4,7 @@
 FROM node:22-alpine AS deps
 WORKDIR /app
 
+# Force cache invalidation - change this comment to rebuild: v2
 # Install dependencies for native modules
 RUN apk add --no-cache libc6-compat
 
