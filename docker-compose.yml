@@ -1,32 +1,11 @@
 # ===========================================
-# MK-Ops License Manager - Docker Compose
+# MK-Ops License Manager - Docker Compose (DEBUG MODE)
 # ===========================================
-# Este compose usa variáveis de ambiente para configuração.
+# ⚠️ VERSÃO COM VALORES HARDCODED PARA DEBUG LOCAL
 # 
-# VARIÁVEIS OBRIGATÓRIAS (configure no Portainer):
-#   - DATABASE_URL (URL completa de conexão com PostgreSQL)
-#   - POSTGRES_PASSWORD (senha do PostgreSQL)
-#   - NEXT_PUBLIC_APP_URL (URL pública da aplicação)
-#
-# VARIÁVEIS OPCIONAIS (têm defaults):
-#   - POSTGRES_USER (default: postgres)
-#   - POSTGRES_DB (default: mkops_licenses)
-#   - NODE_ENV (default: production)
-#   - TZ (default: America/Sao_Paulo)
-#
-# REDE:
-#   - Usa a rede 'internal_network' existente no servidor
-#   - Compartilhada com Nginx Proxy Manager, Portainer e outros serviços
-#
-# ⚠️ IMPORTANTE PARA PORTAINER:
-#   O Portainer NÃO expande variáveis dentro de outras variáveis.
-#   Por isso, DATABASE_URL deve vir COMPLETA das env vars do Portainer.
-#   Exemplo: postgresql://postgres:senha@db:5432/mkops_licenses
-#
+# Quando subir no Portainer, use as variáveis de ambiente.
 # Veja: PORTAINER.md para guia completo de configuração
 # ===========================================
-
-version: '3.8'
 
 services:
   # PostgreSQL Database
@@ -35,11 +14,11 @@ services:
     container_name: mkops_licenses_db
     restart: unless-stopped
     environment:
-      POSTGRES_USER: ${POSTGRES_USER:-postgres}
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
-      POSTGRES_DB: ${POSTGRES_DB:-mkops_licenses}
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres123
+      POSTGRES_DB: mkops_licenses
       POSTGRES_INITDB_ARGS: "-E UTF8"
-      TZ: ${TZ:-America/Sao_Paulo}
+      TZ: America/Sao_Paulo
     volumes:
       - pgdata:/var/lib/postgresql/data
     networks:
@@ -63,14 +42,14 @@ services:
     container_name: mkops_licenses_app
     restart: unless-stopped
     environment:
-      # ⚠️ DATABASE_URL deve vir COMPLETA do Portainer
-      # Exemplo: postgresql://postgres:senha@db:5432/mkops_licenses
-      - DATABASE_URL=${DATABASE_URL}
-      - NODE_ENV=${NODE_ENV:-production}
-      - NEXT_PUBLIC_APP_URL=${NEXT_PUBLIC_APP_URL}
+      # Valores hardcoded para debug - SUBSTITUA depois no Portainer
+      - DATABASE_URL=postgresql://postgres:postgres123@db:5432/mkops_licenses
+      - NODE_ENV=production
+      - NEXT_PUBLIC_APP_URL=http://localhost:3000
       - PORT=3000
-    # Porta NÃO exposta no host - acesso exclusivo via Nginx Proxy Manager
-    # NPM deve usar: http://mkops_licenses_app:3000
+    # Porta exposta para DEBUG LOCAL - remova no Portainer
+    ports:
+      - "3000:3000"
     depends_on:
       db:
         condition: service_healthy
@@ -89,13 +68,11 @@ services:
 # ===========================================
 # Networks
 # ===========================================
-# Usa a rede 'internal_network' existente no servidor
-# Esta é a mesma rede onde o Nginx Proxy Manager está conectado
-# Subnet: 172.26.0.0/24
+# TEMPORÁRIO: Usando bridge local para debug
+# No Portainer, troque para 'external: true' e use 'internal_network'
 networks:
   internal_network:
-    external: true
-    name: internal_network
+    driver: bridge
 
 volumes:
   pgdata:
