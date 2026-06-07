@@ -12,7 +12,8 @@ COPY package*.json ./
 COPY prisma ./prisma/
 
 # Install ALL dependencies (needed for build)
-RUN npm ci && \
+# Using npm install instead of npm ci because lock file will be out of sync
+RUN npm install && \
     npm cache clean --force
 
 # ======================================
