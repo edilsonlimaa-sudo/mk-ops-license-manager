@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { Suspense, useEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { StatusBadge } from "@/components/StatusBadge";
@@ -17,7 +17,7 @@ interface License {
   phone: string | null;
 }
 
-export default function LicensesPage() {
+function LicensesContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const [licenses, setLicenses] = useState<License[]>([]);
@@ -246,5 +246,13 @@ export default function LicensesPage() {
         </div>
       )}
     </div>
+  );
+}
+
+export default function LicensesPage() {
+  return (
+    <Suspense fallback={<div className="text-center py-12">Carregando...</div>}>
+      <LicensesContent />
+    </Suspense>
   );
 }
