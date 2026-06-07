@@ -68,12 +68,11 @@ COPY --from=builder /app/.next/static ./.next/static
 COPY --from=builder /app/prisma ./prisma
 COPY --from=builder /app/package.json ./package.json
 
-# Copy Prisma Client (generated in node_modules)
-COPY --from=builder /app/node_modules/.prisma ./node_modules/.prisma
-COPY --from=builder /app/node_modules/@prisma/client ./node_modules/@prisma/client
-COPY --from=builder /app/node_modules/@prisma/engines ./node_modules/@prisma/engines
-COPY --from=builder /app/node_modules/prisma ./node_modules/prisma
-COPY --from=builder /app/node_modules/.bin/prisma ./node_modules/.bin/prisma
+# Install ONLY Prisma dependencies in production
+RUN npm install prisma@5.22.0 @prisma/client@5.22.0 --omit=dev
+
+# Generate Prisma Client with correct binary targets
+RUN npx prisma generate
 
 # Copy entrypoint script
 COPY docker-entrypoint.sh /usr/local/bin/
