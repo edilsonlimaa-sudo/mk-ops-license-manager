@@ -39,8 +39,44 @@ fi
 
 echo ""
 echo "🔄 Attempting database connection..."
-until echo "SELECT 1" | npx prisma db execute --stdin 2>/dev/null; do
-  echo "⏳ Database is unavailable - sleeping"
+ATTEMPT=1
+until node -e "
+const { PrismaClient } = require('@prisma/client');
+const prisma = new PrismaClient({
+  datasources: { db: { url: process.env.DATABASE_URL } }
+});
+prisma.\$connect()
+  .then(() => { 
+    console.log('✅ Connection test: OK'); 
+    return prisma.\$disconnect(); 
+  })
+  .then(() => process.exit(0))
+  .catch((error) => { 
+    console.error('❌ Connection failed:', error.message);
+    process.exit(1);
+  });
+" 2>&1; do
+  echo "⏳ Database is unavailable - attempt $ATTEMPT - sleeping"
+  ATTEMPT=$((ATTEMPT + 1))
+  
+  # Após 10 tentativas, mostrar diagnóstico completo
+  if [ $ATTEMPT -eq 10 ]; then
+    echo ""
+    echo "🔍 Detailed diagnostics after 10 failed attempts:"
+    echo "   Testing raw TCP connection to db:5432..."
+    nc -zv db 5432 2>&1 || echo "   ❌ TCP connection failed"
+    echo ""
+    echo "   Testing PostgreSQL directly..."
+    PGPASSWORD=postgres123 psql -h db -U postgres -d mkops_licenses -c "SELECT 1" 2>&1 || echo "   ❌ PostgreSQL connection failed"
+    echo ""
+  fi
+  
+  # Limitar a 30 tentativas
+  if [ $ATTEMPT -gt 30 ]; then
+    echo "❌ Failed to connect after 30 attempts. Exiting..."
+    exit 1
+  fi
+  
   sleep 2
 done
 
