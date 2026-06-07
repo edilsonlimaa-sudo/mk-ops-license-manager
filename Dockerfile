@@ -52,8 +52,11 @@ COPY --from=builder /app/public ./public
 COPY --from=builder /app/.next/standalone ./
 COPY --from=builder /app/.next/static ./.next/static
 COPY --from=builder /app/prisma ./prisma
-COPY --from=builder /app/app/generated ./app/generated
 COPY --from=builder /app/package.json ./package.json
+
+# Copy Prisma Client (generated in node_modules)
+COPY --from=builder /app/node_modules/.prisma ./node_modules/.prisma
+COPY --from=builder /app/node_modules/@prisma/client ./node_modules/@prisma/client
 
 # Copy entrypoint script
 COPY docker-entrypoint.sh /usr/local/bin/

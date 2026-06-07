@@ -5,7 +5,7 @@ echo "🚀 Starting MK-Ops License Manager..."
 
 echo "⏳ Waiting for database to be ready..."
 until node -e "
-const { PrismaClient } = require('./app/generated/prisma/client');
+const { PrismaClient } = require('@prisma/client');
 const prisma = new PrismaClient();
 prisma.\$connect()
   .then(() => { console.log('✅ Database connected'); process.exit(0); })
