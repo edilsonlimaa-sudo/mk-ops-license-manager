@@ -105,7 +105,7 @@ export default function EditLicensePage({
         </div>
       )}
 
-      <form onSubmit={handleSubmit} className="space-y-6 rounded-lg border bg-white p-6">
+      <form key={license.id} onSubmit={handleSubmit} className="space-y-6 rounded-lg border bg-white p-6">
         <div className="space-y-4">
           <h2 className="text-lg font-semibold text-gray-900">Informações Básicas</h2>
 
@@ -126,7 +126,7 @@ export default function EditLicensePage({
 
           <div>
             <label className="block text-sm font-medium text-gray-700">
-              Nome da Empresa <span className="text-red-500">*</span>
+              Nome do Cliente <span className="text-red-500">*</span>
             </label>
             <input
               type="text"
@@ -135,6 +135,9 @@ export default function EditLicensePage({
               defaultValue={license.clientName}
               className="mt-1 block w-full rounded-lg border px-4 py-2 focus:border-blue-500 focus:outline-none"
             />
+            <p className="mt-1 text-xs text-gray-500">
+              Nome da empresa que utiliza a licença
+            </p>
           </div>
 
           <div className="grid grid-cols-2 gap-4">
