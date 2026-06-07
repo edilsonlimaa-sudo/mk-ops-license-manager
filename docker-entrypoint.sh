@@ -85,7 +85,10 @@ echo "✅ Database connected!"
 echo ""
 
 echo "📊 Running database migrations..."
-npx prisma migrate deploy
+echo "📦 Prisma CLI version being used:"
+./node_modules/.bin/prisma --version
+echo ""
+./node_modules/.bin/prisma migrate deploy
 
 echo "✅ Migrations completed!"
 echo ""
