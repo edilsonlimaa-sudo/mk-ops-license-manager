@@ -20,7 +20,7 @@ services:
       POSTGRES_INITDB_ARGS: "-E UTF8"
       TZ: America/Sao_Paulo
     volumes:
-      - pgdata:/var/lib/postgresql/data
+      - mkops_pgdata:/var/lib/postgresql/data
     networks:
       - internal_network
     healthcheck:
@@ -75,5 +75,5 @@ networks:
     driver: bridge
 
 volumes:
-  pgdata:
+  mkops_pgdata:
     driver: local
