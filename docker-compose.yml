@@ -68,11 +68,10 @@ services:
 # ===========================================
 # Networks
 # ===========================================
-# TEMPORÁRIO: Usando bridge local para debug
-# No Portainer, troque para 'external: true' e use 'internal_network'
+# Usando a rede EXTERNA 'internal_network' (mesma do Nginx Proxy Manager)
 networks:
   internal_network:
-    driver: bridge
+    external: true
 
 volumes:
   mkops_pgdata:
