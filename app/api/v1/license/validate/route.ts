@@ -93,7 +93,7 @@ export async function POST(req: NextRequest) {
         status: response.status,
       },
     })
-    .catch((err) => console.error("[audit] Failed to write validation log:", err));
+    .catch((err: unknown) => console.error("[audit] Failed to write validation log:", err));
 
   return NextResponse.json(response);
 }
