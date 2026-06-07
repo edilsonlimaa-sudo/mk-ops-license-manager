@@ -37,8 +37,9 @@ else
   echo "   ⚠️  DB container might not be running or not ready yet"
 fi
 
+echo ""
 echo "🔄 Attempting database connection..."
-until npx prisma db execute --stdin <<< "SELECT 1" 2>/dev/null; do
+until echo "SELECT 1" | npx prisma db execute --stdin 2>/dev/null; do
   echo "⏳ Database is unavailable - sleeping"
   sleep 2
 done
@@ -52,38 +53,6 @@ npx prisma migrate deploy
 
 echo "✅ Migrations completed!"
 echo ""
-
-echo "🎯 Starting Next.js server..."
-exec node server.js
-const { PrismaClient } = require('@prisma/client');
-const { PrismaPg } = require('@prisma/adapter-pg');
-const pg = require('pg');
-
-const connectionString = process.env.DATABASE_URL;
-const pool = new pg.Pool({ connectionString });
-const adapter = new PrismaPg(pool);
-const prisma = new PrismaClient({ adapter });
-
-prisma.\$connect()
-  .then(() => { 
-    console.log('✅ Database connected'); 
-    return prisma.\$disconnect();
-  })
-  .then(() => pool.end())
-  .then(() => process.exit(0))
-  .catch(() => { 
-    console.log('❌ Database not ready yet'); 
-    pool.end().finally(() => process.exit(1));
-  });
-" 2>/dev/null; do
-  echo "⏳ Database is unavailable - sleeping"
-  sleep 2
-done
-
-echo "📊 Running database migrations..."
-npx prisma migrate deploy
-
-echo "✅ Migrations completed!"
 
 echo "🎯 Starting Next.js server..."
 exec node server.js
