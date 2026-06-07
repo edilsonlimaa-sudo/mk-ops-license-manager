@@ -2,6 +2,18 @@
 set -e
 
 echo "🚀 Starting MK-Ops License Manager..."
+echo ""
+echo "📋 Environment Variables:"
+echo "   NODE_ENV: $NODE_ENV"
+echo "   PORT: $PORT"
+echo "   NEXT_PUBLIC_APP_URL: $NEXT_PUBLIC_APP_URL"
+if [ -n "$DATABASE_URL" ]; then
+  MASKED_DB_URL=$(echo "$DATABASE_URL" | sed -E 's/:([^:@]+)@/:****@/')
+  echo "   DATABASE_URL: $MASKED_DB_URL"
+else
+  echo "   DATABASE_URL: ❌ NOT SET"
+fi
+echo ""
 
 echo "⏳ Waiting for database to be ready..."
 until node -e "
